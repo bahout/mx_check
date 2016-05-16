@@ -1,0 +1,48 @@
+{
+  "name": "email-verify",
+  "version": "0.0.18",
+  "description": "A tool to verify an email address exits via SMTP",
+  "main": "index.js",
+  "dependencies": {
+    "email-validator": "1.0.1",
+    "lodash": "^4.0.0",
+    "bluebird": "latest"
+  },
+  "devDependencies": {
+    "mocha": "1.21.5"
+  },
+  "bugs": {
+    "url": "https://github.com/bighappyworld/email-verify/issues"
+  },
+  "scripts": {
+    "test": "node test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bighappyworld/email-verify.git"
+  },
+  "preferGlobal": true,
+  "bin": {
+    "email-verify": "./app.js"
+  },
+  "author": {
+    "name": "Robert Oaks",
+    "email": "rob@below.io",
+    "url": "http://below.io/"
+  },
+  "license": "ISC",
+  "keywords": [
+    "email",
+    "smtp",
+    "verify",
+    "validate"
+  ],
+  "gitHead": "7b1f15aa91f092ae27ee2df8f8304410bb3bb8de",
+  "readme": "#SMTP Email Verification\n\n###Install\n\n```\nnpm install -g email-verify\n```\n\n#### Important Note\n\nIf you upgrade to > 0.0.12 from a previous version, you will need to make minor changes in your code. The callback was made to be error first.\n\n###Usage\nYou can use it stand alone with the email-verify command and as many email addresses as you want to check.\n\n```\nemail-verify addr1@domain.com addr2@anotherdomain.com\n```\n\nUsing -d\n\n```\nemail-verify -d domain.com addr1 addr2 addr3\n```\n\nUsing -d -s, checking the standard email addresses\n\n```\nemail-verify -d domain.com -s\n```\n\nUsing -d -n, checking for variations of a name [-n firstname lastname]\n\n```\nemail-verify -d domain.com -n firstname lastname\n```\n\nUsing it in a more complicated way\n\n```\nemail-verify -d domainA.com addr1 addr2 -n firstname1 lastname1 -d domainB -n firstname2 lastname2\n```\n\nEach time you use -d, it treats everything after it as that domain until another domain is used. Until you use -d, it treats it as there is no domain so you can't do -s or -n.\n\nOther options supported are -p _port_, -t _timeout_, -sd _sender@email.com_, -f _FDQN_, -dns _DNSIPADDRESS_, -c _concurrency_, --file / -file _FILEPATH_\n\nThe FDQN is used on the first HELO of the SMTP protocol. Defaults for the sender are name@example.org and default for the FDQN is mail.example.org. Strongly suggested that you change these. (Previous ones used my email / domain, just removed that)\n\n\n\nThe module has one asynchronous method: verify( email, _options_, callback )\n\n###Callback\nThe callback is a function(err, info) that has an info object:\n```\n{\n  success: boolean\n  info: string\n  addr: the address being verified\n}\n```\n\n###Options\nThe options are:\n```\n{\n  port : integer, port to connect with defaults to 25\n  sender : email, sender address, defaults to name@example.org\n  timeout : integer, socket timeout defaults to 0 which is no timeout\n  fdqn : domain, used as part of the HELO, defaults to mail.example.org\n  dns: ip address, or array of ip addresses (as strings), used to set the servers of the dns check,\n  ignore: set an ending response code integer to ignore, such as 450 for greylisted emails\n}\n```\n\n###Flow\n\nThe basic flow is as follows:\n\n1. Validate it is a proper email address\n2. Get the domain of the email\n3. Grab the DNS MX records for that domain\n4. Create a TCP connection to the smtp server\n5. Send a EHLO message\n6. Send a MAIL FROM message\n7. Send a RCPT TO message\n8. If they all validate, return an object with success: true. If any stage fails, the callback object will have success: false.\n\nThis module has tests with Mocha. Run `npm test` and make sure you have a solid connection.\n\nUse:\n\n```\nvar verifier = require('email-verify');\nverifier.verify( 'anemail@domain.com', function( err, info ){\n  if( err ) console.log(err);\n  else{\n    console.log( \"Success (T/F): \" + info.success );\n    console.log( \"Info: \" + info.info );\n  }\n});\n```\n\n### Changes\n\n0.0.10 -> 0.0.11 : changed \"CR\" to \"CRLF\" as per SMTP Standard. Added a QUIT message so that the connection is closed from both ends. (thanks @Nomon)\n\n0.0.11 -> 0.0.12 : some refactoring and styles from james075. important to note, the callback order was changed to be error first. if you upgrade to here, you will need to modify your existing code.\n\n0.0.12 -> 0.0.13 : fix cli -t timeout option\n\n0.0.13 -> 0.0.14 : fix on error callback order\n                   added the capability to specify the DNS servers for the MX record checking programatically and via cli\n\n0.0.14 -> 0.0.15 : prevent socket from writing after end event fires\n0.0.15 -> 0.0.16 : added an ignore option for ignoring greylisted responses\n0.0.16 -> 0.0.17 : sancowinx added a file option for the command line\n",
+  "readmeFilename": "README.md",
+  "homepage": "https://github.com/bighappyworld/email-verify#readme",
+  "_id": "email-verify@0.0.18",
+  "_shasum": "859b3503853862ea214f1f0cf3a8386603e6b767",
+  "_from": "git+https://github.com/bahout/email-verify.git",
+  "_resolved": "git+https://github.com/bahout/email-verify.git#7b1f15aa91f092ae27ee2df8f8304410bb3bb8de"
+}
